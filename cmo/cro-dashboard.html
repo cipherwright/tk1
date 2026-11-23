@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CRO Dashboard</title>
+<style>
+:root{
+  --brand:#366092; --ink:#111827; --measure:#374151; --muted:#6b7280;
+  --border:#e5e7eb; --rule:#f0f1f3; --sidebar:#f9fafb; --active:#dbe6f1;
+  --red:#dc2626; --amber:#d97706; --amber-text:#92400e; --bar:#9ca3af; --track:#eef0f2;
+  --font:"Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  --pad:10px; --gut:clamp(24px,1.7vw,44px); /* table gaps grow with the screen */ /* one cell padding for every table on the page */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:13px/1.4 var(--font);color:var(--ink);background:#fff;min-width:1024px}
+svg text{font-family:var(--font);font-variant-numeric:tabular-nums}
+.banner{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border)}
+.banner .logo{font-size:20px;font-weight:600;color:var(--brand)}
+.banner .org{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.pagehead{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted)}
+.pagehead .t{font-size:14px;font-weight:600;color:var(--ink)}
+.pagehead .r{display:flex;gap:16px;align-items:center}
+.pagehead .syn{border:1px solid #d1d5db;border-radius:3px;padding:0 6px;letter-spacing:.06em}
+.layout{display:flex}
+.sidebar{width:240px;flex:none;background:var(--sidebar);border-right:1px solid var(--border);padding:12px 0}
+.sidebar .grp{padding:0 24px 10px;font-weight:600;font-size:14px}
+.sidebar .grp small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.sidebar .sec{padding:12px 24px 4px;font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.sidebar .item{display:flex;justify-content:space-between;padding:6px 24px;color:var(--measure)}
+.sidebar .item.on{background:var(--active);color:var(--ink);font-weight:600}
+.main{flex:1;padding:0 24px 40px;min-width:0}
+.tabs{display:flex;gap:24px;height:44px;align-items:flex-end;border-bottom:1px solid var(--border)}
+.tabs a{padding:0 2px 10px;color:var(--muted);display:flex;gap:6px;align-items:center;text-decoration:none}
+.tabs a.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--brand);margin-bottom:-1px}
+.tabs .c{background:var(--red);color:#fff;border-radius:8px;font-size:12px;min-width:16px;height:16px;padding:0 4px;display:inline-flex;align-items:center;justify-content:center;font-weight:600}
+.scope{color:var(--muted);margin:10px 0 10px}
+
+/* tiles: the office tiles, unchanged in content */
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.tile{position:relative;border:1px solid var(--border);border-radius:6px;padding:10px 14px 10px 16px;overflow:hidden}
+.tile.red::before,.tile.amber::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.tile.red::before{background:var(--red)} .tile.amber::before{background:var(--amber)}
+.tile .lab{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--measure)}
+.tile .big{font-size:22px;font-weight:600;line-height:1.25;font-variant-numeric:tabular-nums;margin-top:2px}
+.tile .big small{font-size:13px;font-weight:400;color:var(--muted);margin-left:4px}
+.tile.red .big{color:var(--red)} .tile.amber .big{color:var(--amber-text)}
+.tile .ctx,.tile .foot{font-size:12px;color:var(--muted)}
+.tile svg{display:block;width:100%;height:8px;margin:7px 0 5px}
+
+/* sections */
+.sect{border:1px solid var(--border);border-radius:6px;padding:12px 16px 12px;margin-top:16px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.sh b{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--measure);font-weight:600}
+.sh span{font-size:12px;color:var(--muted)}
+
+/* the table: fixed column widths, one padding, header aligned exactly like its values */
+table.fn{width:100%;border-collapse:collapse}
+table.fn th,table.fn td{padding:0 0 0 var(--gut);white-space:nowrap;width:1px}
+table.fn th:first-child,table.fn td:first-child{width:auto}
+table.fn th{font-size:12px;line-height:1.3;font-weight:400;color:var(--muted);text-align:left;height:28px;vertical-align:bottom;padding-bottom:6px;border-bottom:1px solid #9ca3af}
+table.fn td{height:42px;line-height:1.25;border-bottom:1px solid var(--rule);vertical-align:middle}
+table.fn .r{text-align:right;font-variant-numeric:tabular-nums}
+
+table.fn th:first-child,table.fn td:first-child{padding-left:0}
+table.fn th:last-child,table.fn td:last-child{padding-right:0}
+table.fn tr.grp td{border-bottom:1px solid #9ca3af}
+table.fn tbody tr:hover td{background:#f5f8fb;cursor:pointer}
+table.fn tr.ua td{color:var(--muted)}
+table.fn tr.tot td{font-weight:600;border-top:1px solid #9ca3af;border-bottom:0}
+.hn{color:var(--muted)}
+.hn2{display:block;color:var(--muted);font-size:12px;line-height:1.2}
+table.fn.narrow{--gut:16px}
+table.fn.narrow th{height:40px}
+.tw{overflow-x:auto}
+.ut{display:flex;align-items:center;gap:8px}
+.ut .t{flex:none;width:60px;height:3px;background:var(--track);position:relative}
+.ut .t i{position:absolute;left:0;top:0;bottom:0}
+.ut .v{width:36px;text-align:right;font-variant-numeric:tabular-nums}
+.badge{display:inline-block;font-size:12px;padding:0 7px;border-radius:9px;line-height:17px;border:1px solid transparent}
+.badge.red{border-color:var(--red);color:var(--red)}
+.badge.amber{border-color:var(--amber);color:var(--amber-text)}
+.muted{color:var(--muted)}
+
+/* where this month went: four equal columns, same grid in each */
+.where{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr);gap:0 28px}
+.wg .wh{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);border-bottom:1px solid #9ca3af;padding-bottom:5px;margin-bottom:2px}
+.wg .wh b{font-weight:600;color:var(--measure);letter-spacing:.05em;text-transform:uppercase}
+.wr{display:grid;grid-template-columns:minmax(96px,150px) 64px 34px minmax(40px,1fr);column-gap:12px;align-items:center;height:28px;border-bottom:1px solid var(--rule)}
+.wr .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wr .t{height:3px;background:var(--track);position:relative}
+.wr .t i{position:absolute;left:0;top:0;bottom:0;background:var(--bar)}
+.wr .r{text-align:right;font-variant-numeric:tabular-nums}
+.wr.q .n{color:var(--muted)}
+.where.two{grid-template-columns:minmax(0,1fr) minmax(0,1fr);row-gap:18px}
+.cache{font-size:12px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="banner"><div class="logo">Charon</div><div class="org">NOMURA</div></div>
+<div class="pagehead"><div class="t">Dashboard</div>
+  <div class="r"><span class="syn">SYNTHETIC DATA</span><span>Data as of 20 Nov 2026, 13:01 UTC</span><span style="color:var(--ink)">Kumiko Yokokawa</span></div></div>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="grp">Risk Management<small>Group Risk Management Head Office</small></div>
+    <div class="item on">Dashboard</div>
+    <div class="sec">Monitor</div>
+    <div class="item">Envelope Uplifts <span>2</span></div>
+    <div class="item">Analytics</div>
+  </nav>
+  <main class="main">
+    <div class="tabs"><a href="#">Attention <span class="c">4</span></a><a class="on" href="#">Overview</a><a href="#">My Spend</a></div>
+    <div class="scope">All functions · November 2026, 20 of 30 days done</div>
+
+    <div class="tiles">
+      <div class="tile"><div class="lab">Spend to date</div><div class="big">$36,940</div><div class="ctx">78% of $47,300 approved</div><svg id="t1" viewBox="0 0 200 8" preserveAspectRatio="none"></svg><div class="foot">Runs out Thu 26 Nov at this pace</div></div>
+      <div class="tile amber"><div class="lab">Forecast period-end</div><div class="big">$55,410</div><div class="ctx">117% of the approved total</div><svg id="t2" viewBox="0 0 200 8" preserveAspectRatio="none"></svg><div class="foot">Likely $53,194 to $57,626</div></div>
+      <div class="tile red"><div class="lab">Breached</div><div class="big">1<small>of 14 functions</small></div><div class="ctx">Spend is over the envelope</div><svg id="t3" viewBox="0 0 200 8" preserveAspectRatio="none"></svg><div class="foot">Risk Infrastructure and Reporting</div></div>
+      <div class="tile amber"><div class="lab">Will breach</div><div class="big">4<small>of 14 functions</small></div><div class="ctx">Forecast to go over</div><svg id="t4" viewBox="0 0 200 8" preserveAspectRatio="none"></svg><div class="foot">Largest: Market Risk</div></div>
+      <div class="tile"><div class="lab">Unattributed spend</div><div class="big">$1,410</div><div class="ctx">4% of spend to date</div><svg id="t5" viewBox="0 0 200 8" preserveAspectRatio="none"></svg><div class="foot">Not yet tied to an owner; target $0</div></div>
+    </div>
+
+    <div id="body"><div class="sect">
+      <div class="sh"><b>Function envelopes</b><span>Breached first, then forecast to breach, then by spend. Select a row to open it.</span></div>
+      <div class="tw" id="tw"></div>
+    </div>
+
+    <div id="side"><div class="sect">
+      <div class="sh"><b>Monthly spend</b><span>Each month against that month's envelope (black line). Red: spend over the envelope. Dashed: forecast.</span></div>
+      <svg id="mon" height="196" style="display:block;width:100%" role="img" aria-label="Monthly spend against each month's envelope"></svg>
+    </div>
+
+    <div class="sect">
+      <div class="sh"><b>Where this month went</b><span>November to date, $36,940</span></div>
+      <div class="where" id="where"></div>
+      <div class="cache">Cache read 91% of input tokens, against tier targets of 80% Full and 50% Restricted</div>
+    </div></div></div>
+  </main>
+</div>
+
+<script>
+const DAYS=30, TODAY=20, APPROVED=47300, SPENT=36940, FC=55410, FC_LO=53194, FC_HI=57626, UNATTR=1410;
+const daily=[210,2520,2610,2480,2390,2150,280,190,2460,2550,2330,2410,2240,320,250,2380,2420,2290,2310,2150];
+const unattrDaily=[8,96,104,88,92,70,10,6,84,90,78,74,66,12,8,70,64,60,62,56];
+let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const F=[
+ ["Risk Infrastructure and Reporting","Gerard Quinn",9360,9000,-.34],
+ ["Market Risk","Bruce Ahn",5184,5400,-.22],
+ ["Credit Risk","Aisling Doyle",5084,6200,-.19],
+ ["Portfolio Risk Management","Mitchell Smith",3408,4800,-.40],
+ ["Risk Methodology","Tomomi Nakamura",3276,3600,-.49],
+ ["Operational Risk","Ella Cummings",2688,4200,-.17],
+ ["Model Validation","Dmitri Lebedev",1798,3100,-.63],
+ ["New Business","Daisuke Fujita",1650,2500,-.69],
+ ["Powai Management Office","Vinod Kumar Muralidharan",936,1800,-.54],
+ ["Treasury Risk","Akira Sano",660,2000,.60],
+ ["AEJ Management Office","Wen Li",615,1500,-.47],
+ ["Liquidity Risk","Hannah Brandt",412,1400,-.12],
+ ["Climate Risk & ESG","Victoria Collins",286,1000,.08],
+ ["Stress Testing","Rafael Ortiz",173,800,-.30]
+].map(([name,head,s,e,ch],i)=>{const fc=Math.round(s*DAYS/TODAY),lm=Math.round(s/(1+ch));
+  const st=s>e?"Breached":fc>e?"Will breach":"Normal";
+  const d21=[s/TODAY*(.6+.5*rnd())].concat(daily.map(v=>v*s/SPENT*(.7+.6*rnd())));
+  const people=[64,41,44,30,22,27,19,15,12,9,8,6,5,4][i], atcap=[3,2,1,1,2,0,0,0,0,0,0,0,0,0][i], upl=[1,1,0,0,0,0,0,0,0,0,0,0,0,0][i];
+  return {name,head,s,e,fc,lm,ch,st,d21,people,atcap,upl};});
+const order=r=>r.st==="Breached"?0:r.st==="Will breach"?1:2;
+const ROWS=[...F].sort((a,b)=>order(a)-order(b)||b.s-a.s);
+const FC_FN=ROWS.reduce((a,r)=>a+r.fc,0), LM_ALL=Math.round(ROWS.reduce((a,r)=>a+r.lm,0)/(1-UNATTR/SPENT));
+const MONTHS=[["Dec","2025",3124,20000],["Jan","2026",33299,40000],["Feb","",48623,50000],["Mar","",65598,70000],["Apr","",71780,80000],["May","",74697,85000],["Jun","",84778,90000],["Jul","",95690,100000],["Aug","",94161,100000],["Sep","",197657,110000],["Oct","",88690,95000],["Nov","forecast",SPENT,APPROVED,FC],["Dec","forecast",0,47300,58200]];
+const WHERE=[["By source",[["People",SPENT-UNATTR],["Unattributed",UNATTR,1]]],
+ ["By region",[["Powai",12980],["EMEA",7390],["Americas",6280],["Japan",5170],["AEJ",3710],["Unknown",1410,1]]],
+ ["By tier",[["Full",19480],["Restricted",16050],["Unattributed",1410,1]]],
+ ["By model",[["Claude Sonnet 4.6",16620],["Claude Opus 4.6",9240],["Claude Haiku 4.5",4430],["Claude Sonnet 4.5",3880],["Other (9 models)",2770,1]]]];
+
+const $=n=>"$"+Math.round(n).toLocaleString("en-US");
+const pct=x=>Math.round(x*100)+"%";
+const chg=x=>(x>0?"+":x<0?"−":"")+Math.abs(Math.round(x*100))+"%";
+const NS="http://www.w3.org/2000/svg";
+function el(p,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e}
+const G=id=>document.getElementById(id);
+
+/* tiles */
+(function(){
+  const bullet=(s,v,lo,hi,col)=>{const X=p=>200*Math.min(p,1.25)/1.25;
+    el(s,"rect",{x:0,y:2,width:200,height:4,fill:"#eef0f2"});
+    if(lo!=null)el(s,"rect",{x:X(lo),y:2,width:X(hi)-X(lo),height:4,fill:col,"fill-opacity":.3});
+    el(s,"rect",{x:0,y:2,width:X(v),height:4,fill:col});el(s,"rect",{x:X(1)-1,y:0,width:2,height:8,fill:"#111827"});};
+  bullet(G("t1"),SPENT/APPROVED,null,null,"#6b7280");bullet(G("t2"),FC/APPROVED,FC_LO/APPROVED,FC_HI/APPROVED,"#d97706");
+  const seg=(s,n,col)=>{for(let i=0;i<14;i++)el(s,"rect",{x:i*200/14+.5,y:2,width:200/14-2.5,height:4,fill:i<n?col:"#eef0f2"})};
+  seg(G("t3"),1,"#dc2626");seg(G("t4"),4,"#d97706");
+  const s=G("t5"),m=Math.max(...unattrDaily);
+  el(s,"polyline",{points:unattrDaily.map((v,i)=>`${i*200/19},${7.5-v/m*7}`).join(" "),fill:"none",stroke:"#6b7280","stroke-width":1,"vector-effect":"non-scaling-stroke"});
+})();
+
+/* table. The office's ten columns are always shown. Six more join, highest priority first,
+   while the table still fits its section; the lowest priority leaves first as the screen narrows. */
+const WD=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], day=d=>`${WD[(d-1)%7]} ${d} Nov`; // 1 Nov 2026 is a Sunday
+function runsOut(s,e){const d=Math.ceil(e/(s/TODAY));
+  return s>e?`<span style="color:#dc2626">Over since ${day(d)}</span>`:d<=DAYS?day(d):`<span class="muted">Not this month</span>`;}
+const EXTRA=[ // [class, header, header on two lines, cell(r), unattributed cell, total cell]
+ ["r","Forecast vs envelope","Forecast vs<br>envelope",r=>r.over>0?`<b>+${$(r.over).slice(0)} over</b>`:`<span class="muted">${$(-r.over)} under</span>`,"",`<b>+${$(FC-APPROVED)} over</b>`],
+ ["","Envelope runs out","Envelope<br>runs out",r=>runsOut(r.s,r.e),"",day(Math.ceil(APPROVED/(SPENT/TODAY)))],
+ ["r","Uplifts waiting","Uplifts<br>waiting",r=>r.upl?String(r.upl):`<span class="muted">0</span>`,"",2],
+ ["r","At cap today","At cap<br>today",r=>r.atcap?String(r.atcap):`<span class="muted">0</span>`,"",9],
+ ["r","Average a day","Average<br>a day",r=>$(r.s/TODAY),$(UNATTR/TODAY),$(SPENT/TODAY)],
+ ["r","People","People",r=>String(r.people),"",306]];
+function buildTable(narrow,nx){
+  const sp=r=>{const m=Math.max(...r.d21),w=68;return `<svg width="${w}" height="14" style="display:block"><polyline points="${r.d21.map((v,i)=>`${(i*(w-2)/20+1).toFixed(1)},${(13-v/m*11).toFixed(1)}`).join(" ")}" fill="none" stroke="#9ca3af" stroke-width="1"/></svg>`};
+  const ut=(u,st)=>{const c=st==="Breached"?"#dc2626":st==="Will breach"?"#d97706":"#9ca3af";
+    return `<div class="ut"><span class="t"><i style="width:${Math.min(u,1)*100}%;background:${c}"></i></span><span class="v">${pct(u)}</span></div>`};
+  const badge=st=>st==="Breached"?`<span class="badge red">Breached</span>`:st==="Will breach"?`<span class="badge amber">Will breach</span>`:`<span class="muted">Normal</span>`;
+  const X=EXTRA.slice(0,nx);
+  // extras sit beside the column they explain: forecast vs envelope and runs out after Forecast; the rest before Share of total
+  const A=X.slice(0,2),B=X.slice(2);
+  const th=([c,a,b])=>`<th class="${c}">${narrow?b:a}</th>`;
+  const xc=(L,f)=>L.map(x=>`<td class="${x[0]}">${f(x)}</td>`).join("");
+  let h=`<table class="fn${narrow?" narrow":""}"><thead><tr><th>Function</th>${[["r","Spend to date","Spend<br>to date"],["r","Envelope","Envelope"],["","Envelope utilisation","Envelope<br>utilisation"],["r","Forecast period-end","Forecast<br>period-end"]].map(th).join("")}${A.map(th).join("")}${th(["","Status","Status"])}${B.map(th).join("")}${[["r","Share of total","Share<br>of total"],["r","vs last month","vs last<br>month"],["","21 days","21 days"]].map(th).join("")}</tr></thead><tbody>`;
+  const nm=(n,hd)=>`<td title="${n}">${n}<span class="hn2">${hd}</span></td>`;
+  ROWS.forEach((r,i)=>{const grp=ROWS[i+1]&&order(ROWS[i+1])!==order(r)?' class="grp"':'';r.over=r.fc-r.e;
+    h+=`<tr${grp}>${nm(r.name,r.head)}<td class="r">${$(r.s)}</td><td class="r">${$(r.e)}</td><td>${ut(r.s/r.e,r.st)}</td><td class="r">${$(r.fc)}</td>${xc(A,x=>x[3](r))}<td>${badge(r.st)}</td>${xc(B,x=>x[3](r))}<td class="r muted">${pct(r.s/SPENT)}</td><td class="r muted">${chg(r.ch)}</td><td>${sp(r)}</td></tr>`;});
+  const ua=SPENT-ROWS.reduce((a,r)=>a+r.s,0);
+  h+=`<tr class="ua">${nm("Unattributed","No owner yet")}<td class="r">${$(ua)}</td><td class="r">—</td><td>No envelope</td><td class="r">${$(FC-FC_FN)}</td>${xc(A,x=>x[4])}<td></td>${xc(B,x=>x[4])}<td class="r">${pct(ua/SPENT)}</td><td class="r"></td><td></td></tr>`;
+  h+=`<tr class="tot"><td>All functions</td><td class="r">${$(SPENT)}</td><td class="r">${$(APPROVED)}</td><td>${ut(SPENT/APPROVED,"Normal")}</td><td class="r">${$(FC)}</td>${xc(A,x=>x[5])}<td>${badge("Will breach")}</td>${xc(B,x=>x[5])}<td class="r">100%</td><td class="r">${chg(SPENT/LM_ALL-1)}</td><td></td></tr>`;
+  G("tw").innerHTML=h+"</tbody></table>";
+}
+
+/* monthly spend: drawn at the real pixel width so text stays 12px; colour only for over-envelope (red) and forecast (amber) */
+function drawMonths(){
+  const s=G("mon");s.innerHTML="";const W=s.clientWidth,H=196,L=70,R=10,T=22,B=58,n=MONTHS.length,bw=(W-L-R)/n,max=200000,y=v=>H-B-(H-B-T)*v/max;
+  el(s,"line",{x1:L,x2:W-R,y1:y(0),y2:y(0),stroke:"#d1d5db"});
+  MONTHS.forEach(([m,sub,sp,env,fc],i)=>{
+    const cx=L+bw*i+bw/2,w=16,x0=cx-w/2,v=fc||sp,u=v/env;
+    if(fc){ // forecast: dashed amber outline to the forecast, solid grey for spent so far
+      el(s,"rect",{x:x0+.75,y:y(fc),width:w-1.5,height:y(0)-y(fc),fill:"#fdf6e9",stroke:"#d97706","stroke-width":1.2,"stroke-dasharray":"3 2"});
+      if(sp)el(s,"rect",{x:x0,y:y(sp),width:w,height:y(0)-y(sp),fill:"#9ca3af"});
+    }else{
+      el(s,"rect",{x:x0,y:y(Math.min(sp,env)),width:w,height:y(0)-y(Math.min(sp,env)),fill:"#d5d9de"});
+      if(sp>env)el(s,"rect",{x:x0,y:y(sp),width:w,height:y(env)-y(sp),fill:"#dc2626"});
+    }
+    el(s,"line",{x1:x0-7,x2:x0+w+7,y1:y(env),y2:y(env),stroke:"#374151","stroke-width":1.5});
+    el(s,"text",{x:cx,y:Math.min(y(v),y(env))-6,"text-anchor":"middle","font-size":12,fill:"#374151"},$(v));
+    const lab=m+(sub==="forecast"?(bw<100?"":" forecast"):sub?" "+sub:"");
+    el(s,"text",{x:cx,y:H-B+17,"text-anchor":"middle","font-size":12,fill:"#111827","font-weight":fc&&sp?600:400},lab);
+    el(s,"text",{x:cx,y:H-B+33,"text-anchor":"middle","font-size":12,fill:"#6b7280"},$(env));
+    el(s,"text",{x:cx,y:H-B+49,"text-anchor":"middle","font-size":12,fill:u>1&&!fc?"#dc2626":u>1?"#92400e":"#6b7280","font-weight":u>1?600:400},pct(u));
+    el(el(s,"rect",{x:L+bw*i,y:0,width:bw,height:H,fill:"transparent"}),"title",{},`${lab}: ${$(v)} against an envelope of ${$(env)} (${pct(u)})`);
+  });
+  el(s,"text",{x:L-10,y:H-B+33,"text-anchor":"end","font-size":12,fill:"#6b7280"},"Envelope");
+  el(s,"text",{x:L-10,y:H-B+49,"text-anchor":"end","font-size":12,fill:"#6b7280"},"Used");
+}
+
+/* where this month went */
+(function(){
+  G("where").innerHTML=WHERE.map(([t,rows])=>`<div class="wg"><div class="wh"><b>${t}</b><span>${$(SPENT)}</span></div>`+
+    rows.map(([k,v,q])=>`<div class="wr${q?" q":""}"><span class="n" title="${k}">${k}</span><span class="r">${$(v)}</span><span class="r muted">${pct(v/SPENT)}</span><span class="t"><i style="width:${v/SPENT*100}%"></i></span></div>`).join("")+`</div>`).join("");
+})();
+
+function layout(){const full=G("body").parentElement.clientWidth-48;
+  const w=G("tw").parentElement.clientWidth-32;
+  const narrow=w<1080,tw=G("tw");let nx=EXTRA.length;
+  buildTable(narrow,nx);
+  // the function column keeps at least 280px (longest name about 210px); drop extras until it fits
+  while(nx>0&&(tw.scrollWidth>tw.clientWidth||tw.querySelector("td").offsetWidth<280)){nx--;buildTable(narrow,nx);}
+  G("where").classList.toggle("two",G("where").parentElement.clientWidth-32<1250);drawMonths();}
+addEventListener("resize",layout);layout();
+</script>
+</body>
+</html>

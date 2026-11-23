@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CRO Overview Layouts</title>
+<style>
+:root{
+  --brand:#366092; --ink:#111827; --measure:#374151; --muted:#6b7280;
+  --border:#e5e7eb; --sidebar:#f9fafb; --active:#dbe6f1;
+  --red:#dc2626; --amber:#d97706; --amber-text:#92400e;
+  --font:"Segoe UI",-apple-system,Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:12px/1.35 var(--font);color:var(--ink);background:#fff;min-width:1200px}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+svg text{font-family:var(--font);font-variant-numeric:tabular-nums}
+.banner{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border)}
+.banner .logo{font-size:20px;font-weight:600;color:var(--brand)}
+.banner .org{font-size:12px;letter-spacing:.08em;color:var(--muted)}
+.pagehead{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);color:var(--muted)}
+.pagehead .t{font-size:14px;font-weight:600;color:var(--ink)}
+.pagehead .r{display:flex;gap:16px;align-items:center}
+.pagehead .syn{border:1px solid #d1d5db;border-radius:3px;padding:0 6px;letter-spacing:.06em}
+.layout{display:flex}
+.sidebar{width:240px;flex:none;background:var(--sidebar);border-right:1px solid var(--border);min-height:calc(100vh - 104px);padding:12px 0}
+.sidebar .grp{padding:0 24px 10px;font-weight:600;font-size:14px}
+.sidebar .grp small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.sidebar .sec{padding:12px 24px 4px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.sidebar .item{display:flex;justify-content:space-between;padding:6px 24px;font-size:13px;color:var(--measure)}
+.sidebar .item.on{background:var(--active);color:var(--ink);font-weight:600}
+.main{flex:1;padding:0 20px 40px;min-width:0}
+.tabs{display:flex;gap:22px;height:40px;align-items:flex-end;border-bottom:1px solid var(--border)}
+.tabs a{padding:0 2px 9px;font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;text-decoration:none}
+.tabs a.on{color:var(--ink);font-weight:600;border-bottom:2px solid var(--brand);margin-bottom:-1px}
+.tabs .c{background:var(--red);color:#fff;border-radius:8px;font-size:12px;min-width:16px;height:16px;padding:0 4px;display:inline-flex;align-items:center;justify-content:center;font-weight:600}
+.scope{display:flex;justify-content:space-between;color:var(--muted);margin:7px 0 6px}
+
+/* tiles, boxed */
+.tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tile{position:relative;border:1px solid var(--border);border-radius:6px;padding:10px 12px 9px 14px;overflow:hidden}
+.tile.red::before,.tile.amber::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.tile.red::before{background:var(--red)} .tile.amber::before{background:var(--amber)}
+.tile .lab{letter-spacing:.05em;text-transform:uppercase;color:var(--measure)}
+.tile .fig{margin-top:1px;line-height:1.2}
+.tile .big{font-size:22px;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+.tile.red .big{color:var(--red)} .tile.amber .big{color:var(--amber-text)}
+.tile .ctx{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile svg{display:block;width:100%;height:8px;margin:4px 0 2px}
+.tile .foot{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* tiles, strip */
+.tiles.strip{gap:0;border:1px solid var(--border);border-radius:6px}
+.tiles.strip .tile{border:0;border-left:1px solid var(--border);border-radius:0}
+.tiles.strip .tile:first-child{border-left:0}
+
+.panel{border:1px solid var(--border);border-radius:6px;padding:10px 14px 10px}
+.ph{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.ph b{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--measure);font-weight:600}
+.ph span{color:var(--muted)}
+.gap{height:14px}
+
+table.fn{width:100%;border-collapse:collapse;font-size:13px}
+table.fn th{font-size:12px;color:var(--muted);font-weight:400;text-align:left;padding:2px 4px 3px;border-bottom:1px solid #9ca3af;white-space:nowrap;vertical-align:bottom}
+table.fn th.num{text-align:right}
+table.fn td{padding:0 6px;height:30px;border-bottom:1px solid #f0f1f3;white-space:nowrap}
+table.fn td:first-child,table.fn th:first-child{padding-left:0}
+table.fn tr.grp td{border-bottom:1px solid #9ca3af}
+table.fn tbody tr:hover td{background:#f5f8fb;cursor:pointer}
+table.fn tr.tot td{font-weight:600;border-top:1px solid #9ca3af;border-bottom:0}
+table.fn tr.ua td{color:var(--muted)}
+.hn{color:var(--muted);font-size:12px}
+.two td{height:40px!important;line-height:1.3}
+.two th{white-space:normal!important}
+.two .hn{display:block}
+.mrow td{height:24px}
+
+.util{display:inline-block;width:64px;height:3px;background:#eef0f2;position:relative;vertical-align:middle;margin-right:5px}
+.util i{position:absolute;left:0;top:0;bottom:0}
+.badge{display:inline-block;padding:0 5px;border-radius:8px;line-height:15px;border:1px solid transparent}
+.badge.red{border-color:var(--red);color:var(--red)}
+.badge.amber{border-color:var(--amber);color:var(--amber-text)}
+.spark{display:block}
+
+.where{display:grid;gap:0 12px;align-items:start}
+.where table{width:100%;border-collapse:collapse}
+.where th{white-space:nowrap;font-weight:600;color:var(--measure);text-align:left;padding:1px 0;border-bottom:1px solid var(--border);letter-spacing:.04em;text-transform:uppercase}
+.where th.num{text-align:right;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0}
+.where td{padding:0 0 0 6px;height:22px;white-space:nowrap;font-size:13px}
+.where td:first-child{padding-left:0}
+.where td.p{color:var(--muted);width:34px}
+.where .q{color:var(--muted)}
+.cache{color:var(--muted);margin-top:4px}
+
+.row{display:grid;gap:8px}
+.row>div{min-width:0}
+.state{position:fixed;left:0;right:0;bottom:0;background:#fef3a7;border-top:1px solid #e5c100;font-size:13px;padding:5px 16px;display:flex;gap:14px;z-index:9}
+.state a{color:#111827}
+.state a.on{font-weight:700}
+</style>
+</head>
+<body>
+<div class="banner"><div class="logo">Charon</div><div class="org">NOMURA</div></div>
+<div class="pagehead"><div class="t">Dashboard</div>
+  <div class="r"><span class="syn">SYNTHETIC DATA</span><span>Data as of 20 Nov 2026, 13:01 UTC</span><span style="color:var(--ink)">Kumiko Yokokawa</span></div></div>
+<div class="layout">
+  <nav class="sidebar">
+    <div class="grp">Risk Management<small>Group Risk Management Head Office</small></div>
+    <div class="item on">Dashboard</div>
+    <div class="sec">Monitor</div>
+    <div class="item">Envelope Uplifts <span>2</span></div>
+    <div class="item">Analytics</div>
+  </nav>
+  <main class="main">
+    <div class="tabs"><a href="#">Attention <span class="c">4</span></a><a class="on" href="#">Overview</a><a href="#">My Spend</a></div>
+    <div class="scope"><span>All functions · November 2026, 20 of 30 days done</span><span id="lname"></span></div>
+    <div id="root"></div>
+  </main>
+</div>
+<div class="state"><b>Layout</b>
+  <a href="#1" id="s-1">1 · Stacked</a>
+  <a href="#2" id="s-2">2 · Table with side rail</a>
+  <a href="#3" id="s-3">3 · History beside the tiles</a>
+</div>
+
+<script>
+/* ================= data (one set; every item on both office screens) ================= */
+const DAYS=30, TODAY=20, APPROVED=47300, SPENT=36940, FC=55410, FC_LO=53194, FC_HI=57626, UNATTR=1410;
+const daily=[210,2520,2610,2480,2390,2150,280,190,2460,2550,2330,2410,2240,320,250,2380,2420,2290,2310,2150];
+const unattrDaily=[8,96,104,88,92,70,10,6,84,90,78,74,66,12,8,70,64,60,62,56];
+let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const F=[
+ ["Risk Infrastructure and Reporting","Gerard Quinn",9360,9000,-.34],
+ ["Market Risk","Bruce Ahn",5184,5400,-.22],
+ ["Credit Risk","Aisling Doyle",5084,6200,-.19],
+ ["Portfolio Risk Management","Mitchell Smith",3408,4800,-.40],
+ ["Risk Methodology","Tomomi Nakamura",3276,3600,-.49],
+ ["Operational Risk","Ella Cummings",2688,4200,-.17],
+ ["Model Validation","Dmitri Lebedev",1798,3100,-.63],
+ ["New Business","Daisuke Fujita",1650,2500,-.69],
+ ["Powai Management Office","Vinod Kumar Muralidharan",936,1800,-.54],
+ ["Treasury Risk","Akira Sano",660,2000,.60],
+ ["AEJ Management Office","Wen Li",615,1500,-.47],
+ ["Liquidity Risk","Hannah Brandt",412,1400,-.12],
+ ["Climate Risk & ESG","Victoria Collins",286,1000,.08],
+ ["Stress Testing","Rafael Ortiz",173,800,-.30]
+].map(([name,head,s,e,ch])=>{const fc=Math.round(s*DAYS/TODAY),lm=Math.round(s/(1+ch));
+  const st=s>e?"Breached":fc>e?"Will breach":"Normal";
+  const d21=[s/TODAY*(.6+.5*rnd())].concat(daily.map(v=>v*s/SPENT*(.7+.6*rnd())));
+  return {name,head,s,e,fc,lm,ch,st,d21};});
+const order=r=>r.st==="Breached"?0:r.st==="Will breach"?1:2;
+const ROWS=[...F].sort((a,b)=>order(a)-order(b)||b.s-a.s);
+const FC_FN=ROWS.reduce((a,r)=>a+r.fc,0), LM_ALL=Math.round(ROWS.reduce((a,r)=>a+r.lm,0)/(1-UNATTR/SPENT));
+// monthly: spend, envelope, forecast (current and next month)
+const MONTHS=[["Dec","2025",3124,20000],["Jan","2026",33299,40000],["Feb","",48623,50000],["Mar","",65598,70000],["Apr","",71780,80000],["May","",74697,85000],["Jun","",84778,90000],["Jul","",95690,100000],["Aug","",94161,100000],["Sep","",197657,110000],["Oct","",88690,95000],["Nov","forecast",SPENT,APPROVED,FC],["Dec","forecast",0,47300,58200]];
+const WHERE={"By source":[["People",SPENT-UNATTR],["Unattributed",UNATTR,1]],
+ "By region":[["Powai",12980],["EMEA",7390],["Americas",6280],["Japan",5170],["AEJ",3710],["Unknown",1410,1]],
+ "By tier":[["Full",19480],["Restricted",16050],["Unattributed",1410,1]],
+ "By model":[["Claude Sonnet 4.6",16620],["Claude Opus 4.6",9240],["Claude Haiku 4.5",4430],["Claude Sonnet 4.5",3880],["Other (9)",2770,1]]};
+const CACHE="Cache read 91% of input tokens, against tier targets of 80% Full and 50% Restricted";
+
+const $=n=>"$"+Math.round(n).toLocaleString("en-US");
+const pct=x=>Math.round(x*100)+"%";
+const chg=x=>(x>0?"+":x<0?"−":"")+Math.abs(Math.round(x*100))+"%";
+const NS="http://www.w3.org/2000/svg";
+function el(p,tag,a,txt){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p.appendChild(e);return e}
+const G=id=>document.getElementById(id);
+
+/* ================= components ================= */
+function tiles(strip){
+  return `<div class="tiles${strip?" strip":""}">
+  <div class="tile"><div class="lab">Spend to date</div><div class="fig"><span class="big">$36,940</span></div><div class="ctx">78% of $47,300 approved</div><svg id="t1" viewBox="0 0 200 9" preserveAspectRatio="none"></svg><div class="foot">Runs out Thu 26 Nov at this pace</div></div>
+  <div class="tile amber"><div class="lab">Forecast period-end</div><div class="fig"><span class="big">$55,410</span></div><div class="ctx">117% of the approved total</div><svg id="t2" viewBox="0 0 200 9" preserveAspectRatio="none"></svg><div class="foot">Likely $53,194 to $57,626</div></div>
+  <div class="tile red"><div class="lab">Breached</div><div class="fig"><span class="big">1</span><span class="ctx"> of 14 functions</span></div><div class="ctx">Spend is over the envelope</div><svg id="t3" viewBox="0 0 200 9" preserveAspectRatio="none"></svg><div class="foot">Risk Infrastructure and Reporting</div></div>
+  <div class="tile amber"><div class="lab">Will breach</div><div class="fig"><span class="big">4</span><span class="ctx"> of 14 functions</span></div><div class="ctx">Forecast to go over</div><svg id="t4" viewBox="0 0 200 9" preserveAspectRatio="none"></svg><div class="foot">Largest: Market Risk</div></div>
+  <div class="tile"><div class="lab">Unattributed spend</div><div class="fig"><span class="big">$1,410</span></div><div class="ctx">4% of spend to date</div><svg id="t5" viewBox="0 0 200 9" preserveAspectRatio="none"></svg><div class="foot">Not yet tied to an owner; target $0</div></div>
+  </div>`;}
+function drawTiles(){
+  const bullet=(s,v,lo,hi,col)=>{const X=p=>200*Math.min(p,1.25)/1.25;
+    el(s,"rect",{x:0,y:1,width:200,height:7,fill:"#eef0f2"});el(s,"rect",{x:X(.9),y:1,width:X(1)-X(.9),height:7,fill:"#dfe2e6"});
+    if(lo!=null)el(s,"rect",{x:X(lo),y:3,width:X(hi)-X(lo),height:3,fill:col,"fill-opacity":.35});
+    el(s,"rect",{x:0,y:3,width:X(v),height:3,fill:col});el(s,"rect",{x:X(1)-1,y:0,width:2,height:9,fill:"#111827"});};
+  bullet(G("t1"),SPENT/APPROVED,null,null,"#374151");bullet(G("t2"),FC/APPROVED,FC_LO/APPROVED,FC_HI/APPROVED,"#d97706");
+  const seg=(s,n,col)=>{for(let i=0;i<14;i++)el(s,"rect",{x:i*200/14+.5,y:1,width:200/14-2,height:7,fill:i<n?col:"#eef0f2"})};
+  seg(G("t3"),1,"#dc2626");seg(G("t4"),4,"#d97706");
+  const s=G("t5"),m=Math.max(...unattrDaily);
+  el(s,"polyline",{points:unattrDaily.map((v,i)=>`${i*200/19},${8.5-v/m*8}`).join(" "),fill:"none",stroke:"#374151","stroke-width":1.2,"vector-effect":"non-scaling-stroke"});
+}
+
+function table(o){ // o: {head:'col'|'below', spark:w, util:w}
+  const sp=(r,w)=>{const m=Math.max(...r.d21);return `<svg class="spark" width="${w}" height="14"><polyline points="${r.d21.map((v,i)=>`${(i*(w-2)/20+1).toFixed(1)},${(13-v/m*11).toFixed(1)}`).join(" ")}" fill="none" stroke="#b6bcc4" stroke-width="1"/></svg>`};
+  const util=r=>{const u=r.s/r.e,c=r.st==="Breached"?"#dc2626":r.st==="Will breach"?"#d97706":"#9ca3af";
+    return `<span class="util" style="width:${o.util}px"><i style="width:${Math.min(u,1)*100}%;background:${c}"></i></span>${pct(u)}`};
+  const badge=r=>r.st==="Breached"?`<span class="badge red">Breached</span>`:r.st==="Will breach"?`<span class="badge amber">Will breach</span>`:`<span class="muted">Normal</span>`;
+  let h=`<table class="fn${o.head==="below"?" two":""}"><thead><tr><th>Function</th>${o.head==="col"?"<th>Functional head</th>":""}<th class="num">Spend to date</th><th class="num">Envelope</th><th>Envelope utilisation</th><th class="num">Forecast period-end</th><th>Status</th><th class="num">Share of total</th><th class="num">vs last month</th><th>21 days</th></tr></thead><tbody>`;
+  ROWS.forEach((r,i)=>{const grp=ROWS[i+1]&&order(ROWS[i+1])!==order(r)?' class="grp"':'';
+    const name=o.head==="col"?`<td>${r.name}</td><td class="hn">${r.head}</td>`:`<td>${r.name}<span class="hn">${r.head}</span></td>`;
+    h+=`<tr${grp} title="${r.name}, ${r.head}">${name}<td class="num">${$(r.s)}</td><td class="num">${$(r.e)}</td><td>${util(r)}</td><td class="num">${$(r.fc)}</td><td>${badge(r)}</td><td class="num muted">${pct(r.s/SPENT)}</td><td class="num muted">${chg(r.ch)}</td><td>${sp(r,o.spark)}</td></tr>`;});
+  const ua=SPENT-ROWS.reduce((a,r)=>a+r.s,0);
+  h+=`<tr class="ua"><td>Unattributed</td>${o.head==="col"?"<td>No owner yet</td>":""}<td class="num">${$(ua)}</td><td class="num">—</td><td>No envelope</td><td class="num">${$(FC-FC_FN)}</td><td></td><td class="num">${pct(ua/SPENT)}</td><td></td><td></td></tr>`;
+  h+=`<tr class="tot"><td>All functions</td>${o.head==="col"?"<td></td>":""}<td class="num">${$(SPENT)}</td><td class="num">${$(APPROVED)}</td><td><span class="util" style="width:${o.util}px"><i style="width:78%;background:#9ca3af"></i></span>78%</td><td class="num">${$(FC)}</td><td><span class="badge amber">Will breach</span></td><td class="num">100%</td><td class="num">${chg(SPENT/LM_ALL-1)}</td><td></td></tr>`;
+  return h+"</tbody></table>";}
+
+function monthly(id,W,H){ // every month: value above, envelope under the month
+  const s=G(id),L=4,R=4,T=16,B=30,n=MONTHS.length,bw=(W-L-R)/n,max=200000,y=v=>H-B-(H-B-T)*v/max;
+  el(s,"line",{x1:L,x2:W-R,y1:y(0),y2:y(0),stroke:"#9ca3af"});
+  MONTHS.forEach(([m,sub,sp,env,fc],i)=>{const cx=L+bw*i+bw/2,w=Math.min(bw*.5,22),x0=cx-w/2,v=fc||sp,u=v/env;
+    const col=u>1?"#dc2626":u>=.9?"#d97706":"#9ca3af";
+    if(fc){el(s,"rect",{x:x0+.5,y:y(fc),width:w-1,height:y(0)-y(fc),fill:"#fff",stroke:col,"stroke-dasharray":"3 2"});
+      if(sp)el(s,"rect",{x:x0,y:y(sp),width:w,height:y(0)-y(sp),fill:"#4b5563"});}
+    else el(s,"rect",{x:x0,y:y(sp),width:w,height:y(0)-y(sp),fill:col});
+    el(s,"line",{x1:x0-4,x2:x0+w+4,y1:y(env),y2:y(env),stroke:"#111827","stroke-width":1.5});
+    el(s,"text",{x:cx,y:Math.min(y(v),y(env))-4,"text-anchor":"middle","font-size":12,fill:"#374151"},$(v));
+    el(s,"text",{x:cx,y:H-B+13,"text-anchor":"middle","font-size":12,fill:fc?"#111827":"#6b7280","font-weight":fc&&sp?600:400},m+(sub==="forecast"?"*":sub?" "+sub.slice(2):""));
+    el(s,"text",{x:cx,y:H-B+26,"text-anchor":"middle","font-size":12,fill:"#9ca3af"},$(env));
+    el(el(s,"rect",{x:L+bw*i,y:0,width:bw,height:H,fill:"transparent"}),"title",{},`${m} ${sub}: ${$(v)} against ${$(env)} (${pct(u)})`);});
+}
+function monthRows(){
+  let h=`<table class="fn mrow"><thead><tr><th>Month</th><th></th><th class="num">Spend</th><th class="num">Envelope</th><th class="num">%</th></tr></thead><tbody>`;
+  MONTHS.forEach(([m,sub,sp,env,fc])=>{const v=fc||sp,u=v/env,col=u>1?"#dc2626":u>=.9?"#d97706":"#9ca3af",W=72,X=p=>W*Math.min(p,2)/2;
+    const bar=fc?`<rect x="0.5" y="2.5" width="${X(u)-1}" height="4" fill="#fff" stroke="${col}" stroke-dasharray="3 2"/>${sp?`<rect x="0" y="2" width="${X(sp/env)}" height="5" fill="#6b7280"/>`:""}`:`<rect x="0" y="2" width="${X(u)}" height="5" fill="${col}"/>`;
+    h+=`<tr><td${fc&&sp?' style="font-weight:600"':''}>${m} ${sub==="forecast"?"forecast":sub}</td><td><svg width="${W+2}" height="9">${bar}<line x1="${X(1)}" x2="${X(1)}" y1="0" y2="9" stroke="#111827" stroke-width="1.5"/></svg></td><td class="num">${$(v)}</td><td class="num muted">${$(env)}</td><td class="num${u>1?"":" muted"}" style="${u>1?"color:#dc2626":""}">${pct(u)}</td></tr>`;});
+  return h+"</tbody></table>";}
+const monthHead=`<div class="ph"><b>Monthly spend</b><span>Black line and figure under the month: that month's envelope · grey under 90%, amber from 90%, red over · * forecast</span></div>`;
+
+function where(cols){
+  const g=Object.entries(WHERE).map(([t,rows])=>`<table><thead><tr><th>${t}</th><th class="num" colspan="2">${$(SPENT)}</th></tr></thead><tbody>`+
+    rows.map(([k,v,q])=>`<tr><td class="${q?'q':''}">${k}</td><td class="num">${$(v)}</td><td class="num p">${pct(v/SPENT)}</td></tr>`).join("")+`</tbody></table>`);
+  return `<div class="where" style="grid-template-columns:${cols}">${g.join("")}</div><div class="cache">${CACHE}</div>`;}
+
+/* ================= layouts ================= */
+const L={
+ "1":{name:"1 · Stacked: tiles, table, then history and breakdown",html:()=>`
+   ${tiles()}<div class="gap"></div>
+   <div class="panel"><div class="ph"><b>Function envelopes</b><span>Breached first, then forecast to breach, then by spend. Select a row to open it.</span></div>${table({head:"col",spark:80,util:70})}</div>
+   <div class="gap"></div>
+   <div class="row" style="grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)">
+     <div class="panel">${monthHead}<svg id="mon" width="100%" viewBox="0 0 660 150"></svg></div>
+     <div class="panel"><div class="ph"><b>Where this month went</b><span>of $36,940</span></div>${where3()}</div>
+   </div>`,draw:()=>monthly("mon",660,150)},
+ "2":{name:"2 · Table with a side rail for history and breakdown",html:()=>`
+   ${tiles()}<div class="gap"></div>
+   <div class="row" style="grid-template-columns:minmax(0,1fr) 372px">
+     <div class="panel"><div class="ph"><b>Function envelopes</b><span>Breached first, then forecast to breach, then by spend. Select a row to open it.</span></div>${table({head:"below",spark:70,util:60})}</div>
+     <div>
+       <div class="panel"><div class="ph"><b>Monthly spend</b><span>Black line: that month's envelope</span></div>${monthRows()}</div><div class="gap"></div>
+       <div class="panel"><div class="ph"><b>Where this month went</b><span>of $36,940</span></div>${where("minmax(0,.9fr) minmax(0,1.1fr)")}</div>
+     </div>
+   </div>`,draw:()=>{}},
+ "3":{name:"3 · History under the tiles, breakdown under the table",html:()=>`
+   ${tiles()}<div class="gap"></div>
+   <div class="panel" style="padding-bottom:2px">${monthHead}<svg id="mon" width="100%" viewBox="0 0 1160 112"></svg></div>
+   <div class="gap"></div>
+   <div class="panel"><div class="ph"><b>Function envelopes</b><span>Breached first, then forecast to breach, then by spend. Select a row to open it.</span></div>${table({head:"col",spark:80,util:70})}</div>
+   <div class="gap"></div>
+   <div class="panel"><div class="ph"><b>Where this month went</b></div>${where("1fr 1.2fr 1fr 1.3fr")}</div>`,draw:()=>monthly("mon",1160,112)}
+};
+function where3(){ // source and tier stacked in the first column
+  const t=(k)=>`<table><thead><tr><th>${k}</th><th></th><th></th></tr></thead><tbody>`+WHERE[k].map(([n,v,q])=>`<tr><td class="${q?'q':''}">${n}</td><td class="num">${$(v)}</td><td class="num p">${pct(v/SPENT)}</td></tr>`).join("")+`</tbody></table>`;
+  return `<div class="where" style="grid-template-columns:0.95fr 0.9fr 1.3fr"><div>${t("By source")}<div style="height:6px"></div>${t("By tier")}</div><div>${t("By region")}</div><div>${t("By model")}</div></div><div class="cache">${CACHE}</div>`;}
+function show(){const k=(location.hash||"#1").slice(1),l=L[k]||L["1"];
+  G("root").innerHTML=l.html();drawTiles();l.draw();G("lname").textContent="Layout "+l.name;
+  document.querySelectorAll(".state a").forEach(a=>a.classList.toggle("on",a.id==="s-"+k));}
+addEventListener("hashchange",show);show();
+</script>
+</body>
+</html>
